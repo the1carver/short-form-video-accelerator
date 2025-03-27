@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "digital-frontier-video-accelerator-backend"
+version = "0.1.0"
+description = "Backend service for Digital Frontier Short-Form Video Accelerator"
+authors = ["Digital Frontier"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.108.0"
+uvicorn = "^0.25.0"
+pydantic = "^2.5.3"
+pydantic-settings = "^2.1.0"
+python-dotenv = "^1.0.0"
+boto3 = "^1.34.11"
+openai = "^1.6.1"
+firebase-admin = "^6.3.0"
+google-cloud-videointelligence = "^2.11.4"
+google-cloud-speech = "^2.23.0"
+stripe = "^7.10.0"
+python-multipart = "^0.0.6"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+black = "^23.12.0"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
