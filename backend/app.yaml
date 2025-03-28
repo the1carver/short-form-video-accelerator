@@ -1,10 +1,10 @@
-name: video-accelerator-backend
+name: short-form-video-accelerator-backend
 services:
   - name: api
     dockerfile_path: Dockerfile
     source_dir: /
     github:
-      repo: Digital-Frontier-Company/video-accelerator-
+      repo: the1carver/short-form-video-accelerator
       branch: main
       deploy_on_push: true
     http_port: 8000
