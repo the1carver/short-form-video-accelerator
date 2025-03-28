@@ -1,5 +1,5 @@
 {
-  "name": "video-accelerator",
+  "name": "short-form-video-accelerator",
   "services": [
     {
       "name": "backend",
@@ -11,17 +11,17 @@
         {
           "key": "OPENAI_API_KEY",
           "scope": "RUN_TIME",
-          "value": "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"
+          "type": "SECRET"
         },
         {
           "key": "AWS_ACCESS_KEY_ID",
           "scope": "RUN_TIME",
-          "value": "m8kj3cus30"
+          "type": "SECRET"
         },
         {
           "key": "AWS_SECRET_ACCESS_KEY",
           "scope": "RUN_TIME",
-          "value": "eYCY2c17vLa5PtO8sVf6N6sOX5ap8fprQBlI55C6"
+          "type": "SECRET"
         },
         {
           "key": "AWS_REGION",
@@ -48,6 +48,30 @@
         {
           "path": "/api",
           "preserve_path_prefix": true
+        }
+      ]
+    },
+    {
+      "name": "frontend",
+      "dockerfile_path": "frontend/Dockerfile",
+      "source_dir": "frontend",
+      "http_port": 80,
+      "instance_size_slug": "basic-xs",
+      "envs": [
+        {
+          "key": "VITE_API_URL",
+          "scope": "BUILD_TIME",
+          "value": "${APP_URL}"
+        },
+        {
+          "key": "VITE_FIREBASE_API_KEY",
+          "scope": "BUILD_TIME",
+          "type": "SECRET"
+        }
+      ],
+      "routes": [
+        {
+          "path": "/"
         }
       ]
     }

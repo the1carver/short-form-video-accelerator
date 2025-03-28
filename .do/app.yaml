@@ -2,8 +2,8 @@ name: video-accelerator
 services:
   - name: backend
     git:
-      repo_clone_url:https://github.com/the1carver/short-form-video-accelerator/backend.git
-      branch: devin/1742865614-architecture-update
+      repo_clone_url: https://github.com/the1carver/short-form-video-accelerator.git
+      branch: main
     dockerfile_path: backend/Dockerfile
     source_dir: backend
     http_port: 8000
@@ -11,13 +11,13 @@ services:
     envs:
       - key: OPENAI_API_KEY
         scope: RUN_TIME
-        value: ${OPENAI_API_KEY}
+        type: SECRET
       - key: AWS_ACCESS_KEY_ID
         scope: RUN_TIME
-        value: ${AWS_ACCESS_KEY_ID}
+        type: SECRET
       - key: AWS_SECRET_ACCESS_KEY
         scope: RUN_TIME
-        value: ${AWS_SECRET_ACCESS_KEY}
+        type: SECRET
       - key: AWS_REGION
         scope: RUN_TIME
         value: us-west-2
@@ -36,8 +36,8 @@ services:
 
   - name: frontend
     git:
-      repo_clone_url: https://github.com/the1carver/short-form-video-accelerator/frontend.git
-      branch: devin/1742865614-architecture-update
+      repo_clone_url: https://github.com/the1carver/short-form-video-accelerator.git
+      branch: main
     dockerfile_path: frontend/Dockerfile
     source_dir: frontend
     http_port: 80
@@ -48,6 +48,6 @@ services:
         value: ${APP_URL}
       - key: VITE_FIREBASE_API_KEY
         scope: BUILD_TIME
-        value: AIzaSyDtNM-yqZnVZyiQS3kLqZ49YxIPrVbtlw4
+        type: SECRET
     routes:
       - path: /
