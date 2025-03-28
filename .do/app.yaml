@@ -1,11 +1,11 @@
-name: video-accelerator
+name: short-form-video-accelerator
 services:
   - name: backend
-    git:
-      repo_clone_url: https://github.com/the1carver/short-form-video-accelerator.git
-      branch: main
-    dockerfile_path: backend/Dockerfile
     source_dir: backend
+    dockerfile_path: Dockerfile
+    github:
+      branch: main
+      deploy_on_push: true
     http_port: 8000
     instance_size_slug: basic-xs
     envs:
@@ -35,11 +35,11 @@ services:
         preserve_path_prefix: true
 
   - name: frontend
-    git:
-      repo_clone_url: https://github.com/the1carver/short-form-video-accelerator.git
-      branch: main
-    dockerfile_path: frontend/Dockerfile
     source_dir: frontend
+    dockerfile_path: Dockerfile
+    github:
+      branch: main
+      deploy_on_push: true
     http_port: 80
     instance_size_slug: basic-xs
     envs:
