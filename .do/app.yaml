@@ -2,7 +2,7 @@ name: video-accelerator
 services:
   - name: backend
     git:
-      repo_clone_url: https://github.com/Digital-Frontier-Company/video-accelerator-.git
+      repo_clone_url:https://github.com/the1carver/short-form-video-accelerator/backend.git
       branch: devin/1742865614-architecture-update
     dockerfile_path: backend/Dockerfile
     source_dir: backend
@@ -36,7 +36,7 @@ services:
 
   - name: frontend
     git:
-      repo_clone_url: https://github.com/Digital-Frontier-Company/video-accelerator-.git
+      repo_clone_url: https://github.com/the1carver/short-form-video-accelerator/frontend.git
       branch: devin/1742865614-architecture-update
     dockerfile_path: frontend/Dockerfile
     source_dir: frontend
