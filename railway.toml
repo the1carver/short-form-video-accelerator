@@ -1,0 +1,24 @@
+[build]
+builder = "nixpacks"
+buildCommand = "echo 'Building both services'"
+
+[deploy]
+startCommand = "echo 'Starting services'"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+
+[[services]]
+name = "backend"
+directory = "backend"
+dockerfile = "backend/Dockerfile"
+internal_port = 8000
+[services.env]
+PORT = "8000"
+
+[[services]]
+name = "frontend"
+directory = "frontend"
+dockerfile = "frontend/Dockerfile"
+internal_port = 80
+[services.env]
+PORT = "80"
