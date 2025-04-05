@@ -1,4 +1,4 @@
-app = "short-form-video-accelerator"
+app = "digital-frontier-video-accelerator-backend-ezunpagu"
 primary_region = "iad"
 kill_signal = "SIGINT"
 kill_timeout = 5

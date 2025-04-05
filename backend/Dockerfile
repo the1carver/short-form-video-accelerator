@@ -21,4 +21,7 @@ ENV PYTHONPATH="/app:$PYTHONPATH"
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Ensure uvicorn is installed
+RUN /app/.venv/bin/pip install uvicorn
+
+CMD ["/app/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
