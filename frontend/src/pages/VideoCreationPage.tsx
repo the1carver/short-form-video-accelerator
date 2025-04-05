@@ -2,33 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { showError, showSuccess } from '../components/ui/toast-utils';
-
-interface VideoSegment {
-  id: string;
-  start_time: number;
-  end_time: number;
-  transcript: string;
-  confidence: number;
-  selected: boolean;
-}
-
-interface ContentItem {
-  id: string;
-  title: string;
-  description: string;
-  duration: number;
-  url: string;
-  thumbnail_url: string;
-  segments: VideoSegment[];
-  created_at: string;
-}
-
-interface Template {
-  id: string;
-  name: string;
-  description: string;
-  thumbnail_url: string;
-}
+import { ContentItem, Template, VideoSegment } from '../types';
+import TimelineEditor from '../components/editor/TimelineEditor';
+import InstantClipForm from '../components/editor/InstantClipForm';
 
 const VideoCreationPage: React.FC = () => {
   const { contentId } = useParams<{ contentId: string }>();
@@ -40,6 +16,7 @@ const VideoCreationPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState<'segments' | 'template' | 'preview'>('segments');
+  const [editMode, setEditMode] = useState<'list' | 'timeline' | 'instant'>('list');
   
   useEffect(() => {
     const fetchData = async () => {
@@ -109,19 +86,46 @@ const VideoCreationPage: React.FC = () => {
               id: '1',
               name: 'TikTok Explainer',
               description: 'Short, engaging explainer template optimized for TikTok with captions and music.',
-              thumbnail_url: 'https://via.placeholder.com/300x500?text=TikTok+Explainer'
+              thumbnail_url: 'https://via.placeholder.com/300x500?text=TikTok+Explainer',
+              aspect_ratio: '9:16',
+              suitable_content_types: ['educational', 'tutorial'],
+              caption_style: {
+                font_family: 'Inter',
+                font_size: 24,
+                font_color: '#FFFFFF',
+                background_color: '#000000B3',
+                position: 'bottom'
+              }
             },
             {
               id: '2',
               name: 'Product Showcase',
               description: 'Highlight your product features with this dynamic template.',
-              thumbnail_url: 'https://via.placeholder.com/300x500?text=Product+Showcase'
+              thumbnail_url: 'https://via.placeholder.com/300x500?text=Product+Showcase',
+              aspect_ratio: '9:16',
+              suitable_content_types: ['product', 'demo'],
+              caption_style: {
+                font_family: 'Montserrat',
+                font_size: 28,
+                font_color: '#FFFFFF',
+                background_color: '#3B82F6B3',
+                position: 'bottom'
+              }
             },
             {
               id: '3',
               name: 'Tutorial Steps',
               description: 'Break down complex processes into simple steps.',
-              thumbnail_url: 'https://via.placeholder.com/300x500?text=Tutorial+Steps'
+              thumbnail_url: 'https://via.placeholder.com/300x500?text=Tutorial+Steps',
+              aspect_ratio: '9:16',
+              suitable_content_types: ['tutorial', 'educational'],
+              caption_style: {
+                font_family: 'Roboto',
+                font_size: 26,
+                font_color: '#333333',
+                background_color: '#FFFFFFCC',
+                position: 'middle'
+              }
             }
           ];
           
@@ -144,7 +148,7 @@ const VideoCreationPage: React.FC = () => {
     
     setContent({
       ...content,
-      segments: content.segments.map(segment => 
+      segments: content.segments.map((segment: any) => 
         segment.id === segmentId 
           ? { ...segment, selected: !segment.selected }
           : segment
@@ -158,7 +162,7 @@ const VideoCreationPage: React.FC = () => {
   
   const handleNextStep = () => {
     if (currentStep === 'segments') {
-      if (!content?.segments.some(segment => segment.selected)) {
+      if (!content?.segments.some((segment: any) => segment.selected)) {
         showError('Please select at least one segment');
         return;
       }
@@ -187,8 +191,8 @@ const VideoCreationPage: React.FC = () => {
       setProcessing(true);
       
       const selectedSegments = content.segments
-        .filter(segment => segment.selected)
-        .map(segment => segment.id);
+        .filter((segment: VideoSegment) => segment.selected)
+        .map((segment: VideoSegment) => segment.id);
       
       // In a real app, this would be an API call
       await api.endpoints.content.createVideo({
@@ -210,6 +214,36 @@ const VideoCreationPage: React.FC = () => {
     }
   };
   
+  const handleInstantClip = async (startTime: number, endTime: number, title: string) => {
+    if (!content) return;
+    
+    try {
+      setProcessing(true);
+      
+      const instantSegment = {
+        id: `instant-${Date.now()}`,
+        start_time: startTime,
+        end_time: endTime,
+        transcript: title,
+        confidence: 1.0,
+        selected: true
+      };
+      
+      const updatedContent = {
+        ...content,
+        segments: [instantSegment]
+      };
+      setContent(updatedContent);
+      
+      setCurrentStep('template');
+    } catch (error) {
+      console.error('Error creating instant clip:', error);
+      showError('Failed to create instant clip');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -293,10 +327,59 @@ const VideoCreationPage: React.FC = () => {
             <p className="text-gray-600 text-sm mt-1">
               Choose the segments you want to include in your short-form video.
             </p>
+            
+            {/* Mode selector */}
+            <div className="flex mt-4 border rounded-lg overflow-hidden">
+              <button
+                className={`px-4 py-2 flex-1 ${
+                  editMode === 'list' ? 'bg-blue-50 text-blue-600' : 'bg-white text-gray-600'
+                }`}
+                onClick={() => setEditMode('list')}
+              >
+                List View
+              </button>
+              <button
+                className={`px-4 py-2 flex-1 ${
+                  editMode === 'timeline' ? 'bg-blue-50 text-blue-600' : 'bg-white text-gray-600'
+                }`}
+                onClick={() => setEditMode('timeline')}
+              >
+                Timeline Editor
+              </button>
+              <button
+                className={`px-4 py-2 flex-1 ${
+                  editMode === 'instant' ? 'bg-blue-50 text-blue-600' : 'bg-white text-gray-600'
+                }`}
+                onClick={() => setEditMode('instant')}
+              >
+                Instant Clip
+              </button>
+            </div>
           </div>
           
-          <div className="divide-y">
-            {content.segments.map((segment) => (
+          {editMode === 'timeline' && (
+            <div className="p-6">
+              <TimelineEditor
+                videoUrl={content.url}
+                duration={content.duration}
+                segments={content.segments}
+                onSegmentUpdate={(updatedSegments) => setContent({...content, segments: updatedSegments})}
+              />
+            </div>
+          )}
+          
+          {editMode === 'instant' && (
+            <div className="p-6">
+              <InstantClipForm
+                duration={content.duration}
+                onCreateClip={(startTime, endTime, title) => handleInstantClip(startTime, endTime, title)}
+              />
+            </div>
+          )}
+          
+          {editMode === 'list' && (
+            <div className="divide-y">
+            {content.segments.map((segment: VideoSegment) => (
               <div 
                 key={segment.id} 
                 className={`p-6 hover:bg-gray-50 cursor-pointer ${segment.selected ? 'bg-blue-50' : ''}`}
@@ -323,7 +406,8 @@ const VideoCreationPage: React.FC = () => {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       )}
       
@@ -399,8 +483,8 @@ const VideoCreationPage: React.FC = () => {
               <h3 className="font-medium mb-2">Selected Segments</h3>
               <div className="border rounded-lg divide-y">
                 {content.segments
-                  .filter(segment => segment.selected)
-                  .map((segment) => (
+                  .filter((segment: VideoSegment) => segment.selected)
+                  .map((segment: VideoSegment) => (
                     <div key={segment.id} className="p-4">
                       <div className="flex justify-between mb-1">
                         <span className="text-sm font-medium text-gray-500">
@@ -412,7 +496,7 @@ const VideoCreationPage: React.FC = () => {
                   ))}
               </div>
               
-              {content.segments.filter(segment => segment.selected).length === 0 && (
+              {content.segments.filter((segment: VideoSegment) => segment.selected).length === 0 && (
                 <p className="text-red-600 text-sm">No segments selected. Please go back and select segments.</p>
               )}
             </div>
@@ -434,9 +518,9 @@ const VideoCreationPage: React.FC = () => {
         {currentStep === 'preview' ? (
           <button
             onClick={handleCreateVideo}
-            disabled={processing || content.segments.filter(segment => segment.selected).length === 0}
+            disabled={processing || content.segments.filter((segment: VideoSegment) => segment.selected).length === 0}
             className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors ${
-              (processing || content.segments.filter(segment => segment.selected).length === 0) ? 'opacity-50 cursor-not-allowed' : ''
+              (processing || content.segments.filter((segment: VideoSegment) => segment.selected).length === 0) ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
             {processing ? (

@@ -14,6 +14,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const UploadPage = lazy(() => import('./pages/UploadPage'));
 const TemplatesPage = lazy(() => import('./pages/TemplatesPage'));
 const VideoCreationPage = lazy(() => import('./pages/VideoCreationPage'));
+const BrandSettingsPage = lazy(() => import('./pages/BrandSettingsPage'));
 
 // Loading fallback
 const LoadingFallback = () => (
@@ -86,6 +87,14 @@ function App() {
           element={
             <Suspense fallback={<LoadingFallback />}>
               <VideoCreationPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="brand-settings"
+          element={
+            <Suspense fallback={<LoadingFallback />}>
+              <BrandSettingsPage />
             </Suspense>
           }
         />

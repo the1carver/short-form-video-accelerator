@@ -26,7 +26,8 @@ const Header: React.FC = () => {
     { name: 'Upload', path: '/upload' },
     { name: 'Templates', path: '/templates' },
     { name: 'Analytics', path: '/analytics' },
-    { name: 'Settings', path: '/settings' }
+    { name: 'Settings', path: '/settings' },
+    { name: 'Brand Settings', path: '/brand-settings' }
   ];
   
   return (
