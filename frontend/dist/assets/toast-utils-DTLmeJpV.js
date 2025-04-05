@@ -1,1 +1,0 @@
-import{y as e}from"./index-Bwe2kUSu.js";const o={position:"top-right",autoClose:5e3,hideProgressBar:!1,closeOnClick:!0,pauseOnHover:!0,draggable:!0},a=(r,s)=>e.success(r,{...o,...s}),u=(r,s)=>e.error(r,{...o,...s});export{a,u as s};
