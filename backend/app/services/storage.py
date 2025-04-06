@@ -1,5 +1,6 @@
 import logging
 import boto3
+import os
 from typing import Optional
 from ..config import settings
 
@@ -12,12 +13,21 @@ class StorageService:
         self.s3_client = None
         self.s3_bucket_name = settings.s3_bucket_name
         self.s3_region = settings.aws_region
+        self.s3_endpoint_url = os.getenv("AWS_ENDPOINT_URL_S3")
         self.initialize_s3()
     
     def initialize_s3(self):
         """Initialize AWS S3 client"""
         try:
-            if settings.aws_access_key_id and settings.aws_secret_access_key:
+            if self.s3_endpoint_url and settings.aws_access_key_id and settings.aws_secret_access_key:
+                self.s3_client = boto3.client(
+                    's3',
+                    endpoint_url=self.s3_endpoint_url,
+                    aws_access_key_id=settings.aws_access_key_id,
+                    aws_secret_access_key=settings.aws_secret_access_key
+                )
+                logger.info("Fly.io Tigris storage client initialized successfully")
+            elif settings.aws_access_key_id and settings.aws_secret_access_key:
                 self.s3_client = boto3.client(
                     's3',
                     region_name=self.s3_region,
@@ -28,7 +38,7 @@ class StorageService:
             else:
                 logger.warning("AWS credentials not provided, S3 operations will be simulated")
         except Exception as e:
-            logger.error(f"Error initializing AWS S3 client: {str(e)}")
+            logger.error(f"Error initializing S3 client: {str(e)}")
             # Continue without S3 for development
     
     async def upload_file(self, file_path: str, key: str, content_type: Optional[str] = None) -> str:
