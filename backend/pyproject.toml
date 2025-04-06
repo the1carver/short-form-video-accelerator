@@ -17,7 +17,7 @@ firebase-admin = "^6.3.0"
 google-cloud-videointelligence = "^2.11.4"
 google-cloud-speech = "^2.23.0"
 stripe = "^7.10.0"
-python-multipart = "^0.0.6"
+python-multipart = "^0.0.18"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
